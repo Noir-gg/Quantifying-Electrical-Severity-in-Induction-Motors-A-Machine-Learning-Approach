@@ -30,10 +30,10 @@ The table replicates the performance reported in the article for the full spectr
 | HistGradientBoosting | 0.934 | 0.934 | 9 |
 
 ### Feature importance
-![SHAP Summary](images/shap_summary_plot.png)
+![SHAP Summary](/shap_summary_plot.png)
 
 ### Data distribution
-![Input Distribution](images/data_distribution.png)
+![Input Distribution](data_distribution.png)
 
 ### Precision‑Recall & ROC
 Running `main.py` reproduces and stores the curves in **`results/precision_recall_curves/`** and **`results/ROC_curves/`** .
