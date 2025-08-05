@@ -4,7 +4,7 @@
 Accurately assessing fault *severity* in industrial induction motors is a crucial step toward condition‑based maintenance. In this repository we implement the complete machine‑learning workflow presented in the paper, from raw three‑phase current signals to quantified severity scores.
 
 ## Code structure
-* `main_v0.py` – end‑to‑end training pipeline: preprocessing, model fitting, evaluation, and automatic export of Precision‑Recall / ROC figures.  
+* `main.py` – end‑to‑end training pipeline: preprocessing, model fitting, evaluation, and automatic export of Precision‑Recall / ROC figures.  
 * `mutual_info.py` – ranks spectral‑domain features with mutual information and generates SHAP explanations.  
 * Jupyter notebooks (`*.ipynb`) – interactive exploration for signal visualisation, feature extraction, and transformation.
 
