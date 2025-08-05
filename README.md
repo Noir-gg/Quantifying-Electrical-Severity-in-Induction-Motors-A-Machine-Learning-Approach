@@ -36,10 +36,10 @@ The table replicates the performance reported in the article for the full spectr
 ![Input Distribution](images/data_distribution.png)
 
 ### Precision‑Recall & ROC
-Running `main.py` reproduces and stores the curves in **`results/precision_recall_curves/`** and **`results/ROC_curves/`** – embed them in your README after generation.
+Running `main.py` reproduces and stores the curves in **`results/precision_recall_curves/`** and **`results/ROC_curves/`** .
 
 ## Inputs and outputs
-* **Inputs** – `final_cleaned_transformed_dataset.csv` (features + label).  
+* **Inputs** – `dataset.csv` (features + label).  
 * **Outputs** – trained model binaries, metrics CSV, PR / ROC figures, SHAP visualisations.
 
 ## Quick start
@@ -52,5 +52,3 @@ python mutual_info.py        # feature ranking and SHAP plots
 ## Citation
 Soon to be published.
 
-## Licence
-MIT
