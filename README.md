@@ -1,4 +1,4 @@
-# This is the code for the paper 'Quantifying Electrical Severity in Induction Motors: A Machine Learning Approach with Spectral Feature Extraction'
+# Quantifying Electrical Severity in Induction Motors: A Machine Learning Approach with Spectral Feature Extraction
 
 ## Project overview
 Accurately assessing fault *severity* in industrial induction motors is a crucial step toward condition‑based maintenance. In this repository we implement the complete machine‑learning workflow presented in the paper, from raw three‑phase current signals to quantified severity scores.
