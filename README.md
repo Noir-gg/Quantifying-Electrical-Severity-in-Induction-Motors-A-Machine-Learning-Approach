@@ -50,9 +50,7 @@ python mutual_info.py        # feature ranking and SHAP plots
 ```
 
 ## Citation
-If you use this code, please cite:
-
-> R. Hussain *et al.*, “Quantifying Electrical Severity in Induction Motors: A Machine Learning Approach with Spectral Feature Extraction,” *IEEE Transactions on Industrial Electronics*, vol. 70, no. 4, pp. 1234‑1245, 2024, doi:10.1109/TIE.2024.10905593.
+Soon to be published.
 
 ## Licence
 MIT
