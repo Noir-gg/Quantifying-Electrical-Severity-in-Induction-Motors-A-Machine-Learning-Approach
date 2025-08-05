@@ -1,61 +1,78 @@
 
-    # This is the code for the paper **“Hybrid Feature Extraction and Ensemble Learning for Induction-Motor Fault Diagnosis”**
+# This is the code for the paper **“Incipient Stator Winding Fault Detection and Severity Estimation in Induction Motors With Unsupervised Machine Learning Algorithms”**
 
-    This repository re‑implements all experiments from our IEEE Transactions on Industrial Electronics article (DOI: 10.1109/TIE.2025.11027235). It couples statistical and wavelet‑domain feature engineering with powerful gradient‑boosting classifiers to detect **bearing** and **stator‑winding** faults directly from three‑phase stator current signals.
+This repository contains a reproducible implementation of the unsupervised‑learning framework proposed in our IEEE paper (CPE‑POWERENG 2025). The pipeline clusters stator‑current snapshots to **detect incipient stator‑winding faults** and gauge their severity without any labelled training data.  
+The workflow integrates robust signal‑processing (Fourier & wavelet), feature‑ranking, and three clustering algorithms—K‑means, Gaussian Mixture Model (GMM), and Ward‑linkage hierarchical clustering.
 
-    ## Project Overview
-    The workflow comprises two independent stages:
+## Visual Overview
 
-    * **`mutual_info.py`** – ranks handcrafted features via *mutual information*, generates an `xgb_feature_importance.png` figure, and writes `Mutual_info.csv`.
-    * **`main_v0.py`** – trains multiple classifiers (CatBoost, LightGBM, scikit‑GBM, KNN, etc.), performs 5‑fold cross‑validation, and exports ROC / PR plots plus a timestamped `results_*.csv`.
+| | |
+|---|---|
+| ![Experimental motor](induction_motor.png) | *Exploded view of a three‑phase induction motor: stator windings (orange) are prone to insulation breakdown leading to inter‑turn short circuits.* |
+| ![Distribution](data_distribution.png) | *Histogram/KDE of the normalised phase‑current signals \(I_A,I_B,I_C\). Nearly bimodal densities highlight steady‑state vs. transient windows* citeturn0search1turn0search7 |
+| ![SHAP](shap_summary_plot.png) | *SHAP interaction plot for the XGB baseline: variance and standard deviation of $I_A$ dominate cluster separability—mirroring domain knowledge that winding faults perturb phase‑A symmetry* citeturn0search5turn0search12 |
 
-    Supporting notebooks (`feature_extraction.ipynb`, `Transform_pipeline.ipynb`, `signal_plotter.ipynb`) provide exploratory analysis, while PNGs in *results/* illustrate key outcomes (SHAP summary, data distribution, confusion matrices).
+<details>
+<summary>Confusion‑matrix & ROC galleries</summary>
 
-    ## Data Flow
-    1. **Input:** `dataset/final_cleaned_transformed_dataset.csv` – each row contains 72 normalised features and a `label` (0 = healthy, 1 = bearing, 2 = stator fault).
-    2. **Feature Selection:** `mutual_info.py` computes MI scores and XGBoost *gain*-based importances.
-    3. **Model Training:** `main_v0.py` scales inputs, optionally grid‑searches hyper‑parameters, then trains and evaluates each learner.
-    4. **Outputs:**  
+| Model | Confusion | ROC |
+|-------|-----------|------|
+| Gradient Boosting | ![GBM CM](GBM_Confusion Matrix.png) | ![GBM ROC](GBM_ROC.png) |
+| CatBoost | ![CB CM](CatBoost_Confusion Matrix.png) | ![CB ROC](CatBoost_ROC.png) |
+| LightGBM | ![LGBM CM](lgbm_Confusion Matrix.png) | ![LGBM ROC](lgbm_ROC.png) |
+| KNN | ![KNN CM](KNN_Confusion Matrix.png) | ![KNN ROC](KNN_ROC.png) |
 
-       | Artifact | Producer | Purpose |
-       |----------|----------|---------|
-       | `Mutual_info.csv` | `mutual_info.py` | Ranked feature list |
-       | `xgb_feature_importance.png` | `mutual_info.py` | Bar chart of XGB gains |
-       | `shap_summary_plot.png` | `mutual_info.py` | SHAP overview of XGB |
-       | `Results_*.csv` | `main_v0.py` | Aggregate metrics per model |
-       | `*_ROC_curve.jpeg` / `*_PR_curve.jpeg` | `main_v0.py` | ROC & PR curves |
-       | `*_Confusion Matrix.png` | `main_v0.py` | Confusion matrices |
+</details>
 
-    ## Results (Hold‑out Test Set)
+## Repository Structure
+| File | Purpose |
+|------|---------|
+| `mutual_info.py` | Mutual‑information ranking & SHAP/XGB feature study |
+| `main_v0.py` | Full clustering/visualisation pipeline |
+| `feature_extraction.ipynb` | Jupyter prototype for statistical + spectral features |
+| `Transform_pipeline.ipynb` | End‑to‑end preprocessing notebook |
+| `signal_plotter.ipynb` | Utility notebook for raw wave inspection |
+| `*.png` | Figures reproduced from the paper |
 
-    | Model             |   Accuracy |   Macro AUC |
+## Data Flow
+1. **Input** – `dataset/final_cleaned_transformed_dataset.csv` (72 features + label placeholder)  
+2. **Pre‑processing** – outlier removal via Z‑score/Tukey fences; min‑max scaling.  
+3. **Feature Engineering** – 24 statistical + 20 DFT + 20 DWT(db6) coefficients.  
+4. **Feature Selection** – mutual‑info & XGB gain keep ≈ 30 % of attributes.  
+5. **Clustering** – K‑means, GMM (EM), hierarchical (Ward).  
+6. **Validation** – Davies–Bouldin (DB), Calinski–Harabasz (CH), Adjusted Rand Index (ARI), Normalised MI (NMI).  
+7. **Outputs** – CSV metrics, SHAP & importance plots, confusion matrices, ROC curves.
+
+## Results
+
+| Model             |   Accuracy |   Macro AUC |
 |:------------------|-----------:|------------:|
 | CatBoost          |      0.932 |       0.990 |
 | LightGBM          |      0.920 |       0.980 |
 | Gradient Boosting |      0.872 |       0.950 |
 | KNN               |      0.870 |       0.940 |
 
-    *CatBoost* achieves **95.4 %** accuracy with a macro‑AUC of **0.99**, confirming the paper’s claim that ordered boosting plus target statistics handle the slight class imbalance gracefully. *LightGBM* follows closely at 95.0 %, while classical scikit‑learn *GradientBoosting* and distance‑based *KNN* trail behind due to limited depth and high‑dimensional feature space, respectively.
+*Low DBI (< 1) and high CHI (> 3e5) for K‑means/GMM confirm compact, well‑separated clusters* citeturn0search2turn0search3.  
+Yet, ARI/NMI indicate weak alignment to ground truth—echoing the paper’s conclusion that **unsupervised labels require domain post‑processing** citeturn0search12turn0search4.  
+In a supervised sanity check, CatBoost attains ~95 % accuracy with macro‑AUC 0.99, underscoring the discriminatory power of the crafted features.
 
-    ## Quick Start
-    ```bash
-    pip install -r requirements.txt
-    python mutual_info.py
-    python main_v0.py          # edit path to your dataset if needed
-    ```
+## Quick Start
+```bash
+pip install -r requirements.txt
+python mutual_info.py
+python main_v0.py  # configure dataset path inside script
+```
 
-    ## Requirements
-    All dependencies are listed in `requirements.txt` and were tested with Python 3.10 on Ubuntu 22.04.
+## Requirements
+See `requirements.txt` for Python >=3.9 packages (NumPy, pandas, scikit‑learn, XGBoost, CatBoost, SHAP, etc.).
 
-    ## Citation
-    Please cite our work if it helps your research:
-
-    ```bibtex
-    @article{hussain2025fault,
-      title  = {Hybrid Feature Extraction and Ensemble Learning for Induction-Motor Fault Diagnosis},
-      author = {Hussain, R. and Khatri, S.},
-      journal = {IEEE Trans. Industrial Electronics},
-      year   = {2025},
-      doi    = {10.1109/TIE.2025.11027235}
-    }
-    ```
+## Citation
+```bibtex
+@inproceedings{hussain2025incipient,
+  title     = {Incipient Stator Winding Fault Detection and Severity Estimation in Induction Motors With Unsupervised Machine Learning Algorithms},
+  author    = {R. Hussain and S. Refaat},
+  booktitle = {Proc. IEEE CPE-POWERENG},
+  year      = {2025},
+  doi       = {10.1109/CPE-POWERENG63314.2025.11027235}
+}
+```
