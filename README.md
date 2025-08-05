@@ -36,7 +36,7 @@ The table replicates the performance reported in the article for the full spectr
 ![Input Distribution](images/data_distribution.png)
 
 ### Precision‑Recall & ROC
-Running `main_v0.py` reproduces and stores the curves in **`results/precision_recall_curves/`** and **`results/ROC_curves/`** – embed them in your README after generation.
+Running `main.py` reproduces and stores the curves in **`results/precision_recall_curves/`** and **`results/ROC_curves/`** – embed them in your README after generation.
 
 ## Inputs and outputs
 * **Inputs** – `final_cleaned_transformed_dataset.csv` (features + label).  
@@ -45,7 +45,7 @@ Running `main_v0.py` reproduces and stores the curves in **`results/precision_re
 ## Quick start
 ```bash
 pip install -r requirements.txt
-python main_v0.py            # trains models, saves metrics & curves
+python main.py            # trains models, saves metrics & curves
 python mutual_info.py        # feature ranking and SHAP plots
 ```
 
