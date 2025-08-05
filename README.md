@@ -1,5 +1,5 @@
 
-# **“Quantifying-Electrical-Severity-in-Induction-Motors-A-Machine-Learning-Approach”**
+# **Quantifying-Electrical-Severity-in-Induction-Motors-A-Machine-Learning-Approach**
 
 This repository contains a reproducible implementation of the unsupervised‑learning framework proposed in our IEEE paper (CPE‑POWERENG 2025). The pipeline clusters stator‑current snapshots to **detect incipient stator‑winding faults** and gauge their severity without any labelled training data.  
 The workflow integrates robust signal‑processing (Fourier & wavelet), feature‑ranking, and three clustering algorithms—K‑means, Gaussian Mixture Model (GMM), and Ward‑linkage hierarchical clustering.
